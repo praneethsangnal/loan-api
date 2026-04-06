@@ -67,6 +67,7 @@ def get_filtered_loans(
             score += (10 - s.loan_processing_fee)
 
         result.append({
+            "id": s.id, 
             "scheme_name": s.scheme_name,
 
             # ranking
@@ -115,6 +116,7 @@ def get_loan_detail(loan_id: int, db: Session = Depends(get_db)):
         return {"error": "Loan not found"}
 
     return {
+        "id": loan.id, 
         "scheme_name": loan.scheme_name,
 
         # financial

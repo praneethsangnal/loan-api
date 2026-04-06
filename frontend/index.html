@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Loan Finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app">
+
+    <header class="site-header">
+      <div class="header-icon">&#127891;</div>
+      <div>
+        <h1>Student Loan Finder</h1>
+        <p class="subtitle">Discover education loan schemes matched to your profile</p>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('manual', this)">
+        <span class="tab-icon">&#128203;</span> Manual Search
+      </button>
+      <button class="tab-btn" onclick="switchTab('ai', this)">
+        <span class="tab-icon">&#129504;</span> AI Search
+      </button>
+    </div>
+
+    <!-- MANUAL SEARCH -->
+    <div id="tab-manual" class="tab-panel active">
+      <div class="card">
+
+        <div class="section-label">Academic Details</div>
+
+        <div class="field">
+          <label for="marks">Class 12 Marks</label>
+          <div class="marks-row">
+            <input type="range" id="marks" min="0" max="100" value="75" oninput="updateMarks(this.value)">
+            <div class="marks-display" id="marks-display">75%</div>
+          </div>
+          <div class="range-labels"><span>0%</span><span>50%</span><span>100%</span></div>
+        </div>
+
+        <div class="section-label" style="margin-top: 1.5rem;">Personal Details</div>
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="state">State</label>
+            <select id="state">
+              <option value="">Select your state</option>
+              <optgroup label="South India">
+                <option value="AP">Andhra Pradesh</option>
+                <option value="KA">Karnataka</option>
+                <option value="KL">Kerala</option>
+                <option value="PY">Puducherry</option>
+                <option value="TN">Tamil Nadu</option>
+                <option value="TS">Telangana</option>
+              </optgroup>
+              <optgroup label="West India">
+                <option value="DD">Dadra & Nagar Haveli and Daman & Diu</option>
+                <option value="GA">Goa</option>
+                <option value="GJ">Gujarat</option>
+                <option value="MH">Maharashtra</option>
+                <option value="RJ">Rajasthan</option>
+              </optgroup>
+              <optgroup label="North India">
+                <option value="CH">Chandigarh</option>
+                <option value="DL">Delhi</option>
+                <option value="HR">Haryana</option>
+                <option value="HP">Himachal Pradesh</option>
+                <option value="JK">Jammu & Kashmir</option>
+                <option value="LA">Ladakh</option>
+                <option value="PB">Punjab</option>
+                <option value="UP">Uttar Pradesh</option>
+                <option value="UK">Uttarakhand</option>
+              </optgroup>
+              <optgroup label="East India">
+                <option value="BR">Bihar</option>
+                <option value="JH">Jharkhand</option>
+                <option value="OD">Odisha</option>
+                <option value="WB">West Bengal</option>
+              </optgroup>
+              <optgroup label="Central India">
+                <option value="CG">Chhattisgarh</option>
+                <option value="MP">Madhya Pradesh</option>
+              </optgroup>
+              <optgroup label="Northeast India">
+                <option value="AR">Arunachal Pradesh</option>
+                <option value="AS">Assam</option>
+                <option value="MN">Manipur</option>
+                <option value="ML">Meghalaya</option>
+                <option value="MZ">Mizoram</option>
+                <option value="NL">Nagaland</option>
+                <option value="SK">Sikkim</option>
+                <option value="TR">Tripura</option>
+              </optgroup>
+              <optgroup label="Islands & UTs">
+                <option value="AN">Andaman & Nicobar Islands</option>
+                <option value="LD">Lakshadweep</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="caste">Caste Category</label>
+            <select id="caste">
+              <option value="">Select category</option>
+              <option value="General">General</option>
+              <option value="OBC">OBC</option>
+              <option value="SC">SC</option>
+              <option value="ST">ST</option>
+              <option value="EWS">EWS</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Gender</label>
+          <div class="chips">
+            <button class="chip selected" onclick="selectChip(this, 'gender', 'Male')">Male</button>
+            <button class="chip" onclick="selectChip(this, 'gender', 'Female')">Female</button>
+            <button class="chip" onclick="selectChip(this, 'gender', 'Other')">Other / Prefer not to say</button>
+          </div>
+          <input type="hidden" id="gender" value="Male">
+        </div>
+
+        <div class="form-footer">
+          <button class="submit-btn" onclick="searchManual()">
+            Find Loans <span class="btn-arrow">&#8594;</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AI SEARCH -->
+    <div id="tab-ai" class="tab-panel">
+      <div class="card">
+        <div class="field">
+          <label for="aiQuery">Describe your situation</label>
+          <textarea id="aiQuery" rows="5" placeholder="e.g. I scored 82% in class 12, belong to OBC category in Tamil Nadu and want to study engineering. What education loans am I eligible for?"></textarea>
+          <p class="helper-text">Include your marks, state, category, and course of interest for better results.</p>
+        </div>
+        <div class="form-footer">
+          <button class="submit-btn" onclick="searchAI()">
+            Search with AI <span class="btn-arrow">&#8594;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-area" id="results-area" style="display:none;">
+      <p class="results-title" id="results-title">Results</p>
+      <div id="results"></div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

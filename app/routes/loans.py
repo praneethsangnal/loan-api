@@ -13,20 +13,18 @@ def get_db():
     finally:
         db.close()
 
-
-@router.get("/loans/filter")
-def filter_loans(
-    marks10: Optional[float] = None,
-    marks12: Optional[float] = None,
-    state: Optional[str] = None,
-    caste: Optional[str] = None,
-    gender: Optional[str] = None,
-    limit: int = 10,
-    db: Session = Depends(get_db)
+def get_filtered_loans(
+    db,
+    marks10=None,
+    marks12=None,
+    state=None,
+    caste=None,
+    gender=None,
+    limit=10
 ):
     query = db.query(Scheme)
 
-    #  HARD FILTERS (eligibility)
+    # 🟢 HARD FILTERS
     if marks10 is not None:
         query = query.filter(Scheme.min_10th_marks <= marks10)
 
@@ -53,44 +51,61 @@ def filter_loans(
 
     schemes = query.all()
 
-    #  SOFT FILTERS / SCORING
+    # 🟡 SOFT FILTERS / SCORING
     result = []
 
     for s in schemes:
         score = 0
 
-        # lower interest = better
         if s.interest_rate_min:
             score += (100 - s.interest_rate_min)
 
-        # higher loan amount = better
         if s.maximum_amount:
             score += (s.maximum_amount / 100000)
 
-        # lower processing fee = better
         if s.loan_processing_fee is not None:
             score += (10 - s.loan_processing_fee)
 
         result.append({
             "scheme_name": s.scheme_name,
 
-            #  ranking fields
+            # ranking
             "interest_rate": s.interest_rate_min,
             "max_amount": s.maximum_amount,
             "processing_fee": s.loan_processing_fee,
             "score": round(score, 2),
 
-            #  display fields
+            # display
             "repayment_period": s.repayment_period,
             "moratorium_period": s.moratorium_period,
             "parent_criteria": s.parent1_profession_criteria,
             "achievement_required": s.govt_achievements_required
         })
 
-    #  sort by best score
     result.sort(key=lambda x: x["score"], reverse=True)
 
     return result[:limit]
+
+
+@router.get("/loans/filter")
+def filter_loans(
+    marks10: Optional[float] = None,
+    marks12: Optional[float] = None,
+    state: Optional[str] = None,
+    caste: Optional[str] = None,
+    gender: Optional[str] = None,
+    limit: int = 10,
+    db: Session = Depends(get_db)
+):
+    return get_filtered_loans(
+        db,
+        marks10=marks10,
+        marks12=marks12,
+        state=state,
+        caste=caste,
+        gender=gender,
+        limit=limit
+    )
 
 @router.get("/loans/{loan_id}")
 def get_loan_detail(loan_id: int, db: Session = Depends(get_db)):

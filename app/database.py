@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+import os
 
-DATABASE_URL = "postgresql://postgres:praneeth@localhost:5433/loan_db"
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # communication with database
 engine = create_engine(DATABASE_URL) 

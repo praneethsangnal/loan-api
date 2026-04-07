@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "https://loan-api-f8sd.onrender.com";
 
 // ── Tab switching ──────────────────────────────────────────────
 function switchTab(tab, btn) {

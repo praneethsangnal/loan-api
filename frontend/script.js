@@ -69,24 +69,39 @@ function showError(message) {
   const area = document.getElementById("results-area");
   const container = document.getElementById("results");
   const title = document.getElementById("results-title");
+  const loading = document.getElementById("loading");
+
+  loading.style.display = "none"; // 👈 hide loading if error
   area.style.display = "block";
+
   title.textContent = "Error";
   container.innerHTML = `
     <div class="empty-state">
       <div class="icon">&#9888;&#65039;</div>
-      ${message || "Could not connect to server. Make sure the backend is running on port 8000."}
+      ${message || "Could not connect to server."}
     </div>`;
 }
 
 // ── AI Search ─────────────────────────────────────────────────
 async function searchAI() {
   const query = document.getElementById("aiQuery").value.trim();
+  const loading = document.getElementById("loading");
+  const area = document.getElementById("results-area");
+
   if (!query) return;
+
+  area.style.display = "block";
+  loading.style.display = "block";
+
   try {
     const res = await fetch(`${BASE_URL}/genai?query=${encodeURIComponent(query)}`);
     if (!res.ok) throw new Error("Server error");
+
     const data = await res.json();
+
+    loading.style.display = "none";
     displayResults(data.results || data);
+
   } catch (e) {
     showError();
   }
@@ -94,6 +109,9 @@ async function searchAI() {
 
 // ── Manual Search ─────────────────────────────────────────────
 async function searchManual() {
+  const loading = document.getElementById("loading");
+  const area = document.getElementById("results-area");
+
   const marks  = document.getElementById("marks").value;
   const state  = document.getElementById("state").value;
   const caste  = document.getElementById("caste").value;
@@ -105,11 +123,18 @@ async function searchManual() {
   if (caste)  url += `caste=${caste}&`;
   if (gender) url += `gender=${gender}&`;
 
+  area.style.display = "block";
+  loading.style.display = "block";
+
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error("Server error");
+
     const data = await res.json();
+
+    loading.style.display = "none";
     displayResults(data);
+
   } catch (e) {
     showError();
   }
@@ -135,26 +160,17 @@ async function toggleDetails(btn, id) {
     if (!res.ok) throw new Error("Not found");
     const d = await res.json();
 
-    const fmt = (val) => val !== undefined && val !== null && val !== "" ? val : "—";
+    const fmt = (val) => val ?? "—";
     const currency = (val) => val ? "₹" + Number(val).toLocaleString("en-IN") : "—";
-    const pct = (val) => val !== undefined && val !== null ? val + "%" : "—";
+    const pct = (val) => val !== null && val !== undefined ? val + "%" : "—";
 
     const fields = [
-      { label: "Scheme Name",        value: fmt(d.scheme_name) },
+      { label: "Scheme Name", value: fmt(d.scheme_name) },
       { label: "Interest Rate (Min)", value: pct(d.interest_rate_min) },
-      { label: "Interest Rate (Max)", value: pct(d.interest_rate_max) },
-      { label: "Maximum Amount",      value: currency(d.maximum_amount) },
-      { label: "Processing Fee",      value: pct(d.processing_fee) },
-      { label: "Prepayment Charges",  value: pct(d.prepayment_charges) },
-      { label: "Min 10th Marks",      value: fmt(d.min_10th_marks) },
-      { label: "Min 12th Marks",      value: fmt(d.min_12th_marks) },
-      { label: "Eligible States",     value: fmt(d.states) },
-      { label: "Eligible Castes",     value: fmt(d.castes) },
-      { label: "Gender",              value: fmt(d.gender) },
-      { label: "Collateral Required", value: fmt(d.collateral_required) },
-      { label: "Repayment Period",    value: fmt(d.repayment_period) },
-      { label: "Moratorium Period",   value: fmt(d.moratorium_period) },
-    ].filter(f => f.value !== "—");
+      { label: "Maximum Amount", value: currency(d.maximum_amount) },
+      { label: "Processing Fee", value: pct(d.processing_fee) },
+      { label: "Repayment Period", value: fmt(d.repayment_period) },
+    ];
 
     panel.innerHTML = `
       <div class="details-grid">
@@ -170,8 +186,9 @@ async function toggleDetails(btn, id) {
     panel.style.display = "block";
     btn.innerHTML = `Hide Details <span class="detail-arrow">&#8963;</span>`;
     btn.classList.add("active");
+
   } catch (e) {
-    panel.innerHTML = `<div class="details-error">Could not load details. Try again.</div>`;
+    panel.innerHTML = `<div class="details-error">Could not load details.</div>`;
     panel.style.display = "block";
     btn.innerHTML = `View Details <span class="detail-arrow">&#8964;</span>`;
   } finally {

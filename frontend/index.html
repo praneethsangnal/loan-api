@@ -106,10 +106,34 @@
     <!-- RESULTS -->
     <div class="results-area" id="results-area" style="display:none;">
       
-      <!-- 🔥 LOADING INDICATOR -->
-      <p id="loading" style="display:none; font-weight:500; margin-bottom:10px;">
-        ⏳ Fetching best loans...
-      </p>
+      <!-- LOADING INDICATOR -->
+      <div id="loading" style="display:none;">
+        <div class="loading-header">
+          <div class="loading-spinner"></div>
+          <span class="loading-text">Fetching best loans for you…</span>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line wide"></div>
+          <div class="skeleton-meta">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line wide"></div>
+          <div class="skeleton-meta">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line wide"></div>
+          <div class="skeleton-meta">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+        </div>
+      </div>
 
       <p class="results-title" id="results-title">Results</p>
       <div id="results"></div>

@@ -7,6 +7,40 @@
 
 ---
 
+### 📸 Screenshots
+
+<p align="center">
+  <img src="assets/ss1_loanapi.png" width="700">
+  <br>
+  <em>Home Page with Manual Search</em>
+</p>
+
+<p align="center">
+  <img src="assets/ss2_loanapi.png" width="700">
+  <br>
+  <em>Filtered loans</em>
+</p>
+
+<p align="center">
+  <img src="assets/ss3_loanapi.png" width="700">
+  <br>
+  <em>More info about loan</em>
+</p>
+
+<p align="center">
+  <img src="assets/ss4_loanapi.png" width="700">
+  <br>
+  <em>AI search interface for user written prompts</em>
+</p>
+
+<p align="center">
+  <img src="assets/ss5_loanapi.png" width="700">
+  <br>
+  <em>Loans found for given prompt</em>
+</p>
+
+---
+
 ## 🚀 Overview
 
 An AI-powered full-stack system that recommends student loan schemes based on eligibility and financial criteria.
